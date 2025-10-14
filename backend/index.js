@@ -40,24 +40,34 @@ function generateTitle(text) {
   return text.split(" ").slice(0, 6).join(" ") + "...";
 }
 
-// Upload route
 app.post("/upload", upload.single("file"), async (req, res) => {
+  console.log("📁 File upload request received...");
+
   try {
+    if (!req.file) {
+      console.error("❌ No file received.");
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
     const filePath = req.file.path;
     const mimeType = req.file.mimetype;
+    console.log("Processing file:", filePath, mimeType);
 
     const text = await extractText(filePath, mimeType);
-    const title = generateTitle(text);
+    console.log("✅ Text extracted successfully.");
 
-    // Delete uploaded file after reading
-    fs.unlinkSync(filePath);
+    const title = generateTitle(text);
+    console.log("📄 Generated title:", title);
+
+    fs.unlinkSync(filePath); // clean up temp file
 
     res.json({ title });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to process file" });
+    console.error("🔥 Upload processing failed:", err);
+    res.status(500).json({ error: err.message || "Failed to process file" });
   }
 });
+
 
 // ✅ Root route to display friendly message
 app.get("/", (req, res) => {
