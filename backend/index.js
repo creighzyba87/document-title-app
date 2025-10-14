@@ -4,11 +4,11 @@ import multer from "multer";
 import fs from "fs";
 import textract from "textract";
 import dotenv from "dotenv";
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const pdf = require("pdf-parse");
+import pdfImport from "pdf-parse";
 
 dotenv.config();
+
+const pdf = pdfImport.default || pdfImport; // ✅ handle both ESM and CJS
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
