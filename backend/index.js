@@ -59,5 +59,10 @@ app.post("/upload", upload.single("file"), async (req, res) => {
   }
 });
 
+// ✅ Root route to display friendly message
+app.get("/", (req, res) => {
+  res.send("✅ Document Title Generator Backend is Running!");
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
