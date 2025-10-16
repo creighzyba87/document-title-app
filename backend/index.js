@@ -4,11 +4,12 @@ import multer from "multer";
 import fs from "fs";
 import textract from "textract";
 import dotenv from "dotenv";
-import pdfImport from "pdf-parse";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const pdf = require("pdf-parse");
 
 dotenv.config();
-
-const pdf = pdfImport.default || pdfImport; // ✅ handle both ESM and CJS
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -67,7 +68,6 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     res.status(500).json({ error: err.message || "Failed to process file" });
   }
 });
-
 
 // ✅ Root route to display friendly message
 app.get("/", (req, res) => {
